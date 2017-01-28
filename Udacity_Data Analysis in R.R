@@ -1,3 +1,9 @@
+#Created 01.28.17 by Therese Kennelly Okraku
+#Last edited 01.28.17 by Therese Kennelly Okraku
+
+#Udacity's Data Analysis with R course
+
+#Review of R basics
 #Subsetting
 statesInfo <- read.csv("stateData.csv")
 stateSubset <- subset(statesInfo, state.region == 1)
@@ -15,7 +21,7 @@ IlliteracyOver2
 install.packages('knitr', dependencies = T) 
 library(knitr)
 
-#reddit
+#Import reddit survey dataset
 setwd("/Users/Therese/Downloads")
 reddit <- read.csv("reddit.csv")
 str(reddit)
@@ -28,8 +34,8 @@ qplot(reddit$age.range)
 qplot(data=reddit, x=income.range)
 #order varables
 
-#data munging
-#fake facebook data
+#Explore one variable
+#Import fake facebook data
 pf <- read.csv('pseudo_facebook.tsv', sep = '\t')
 names(pf)
 ggplot(data = pf, binwidth =25, aes(x = dob_day)) + 
@@ -45,14 +51,12 @@ table(pf$gender)
 #summary
 by(pf$friend_count, pf$gender, summary)
 
-
 friendCount <- pf$friend_count
 qplot(friendCount, bins=10)
 qplot(data = pf, x = friend_count)
 
 qplot(x= tenure, data=pf, 
       color = I('black'), fill = I("#099DD9"))
-
 
 qplot(x= tenure/365, data=pf, binwidth=1,
       ylab = "Number of users in sample",
