@@ -3,7 +3,7 @@
 
 #Udacity's Data Analysis with R course
 
-#Review of R basics
+#Lesson 2: Review of R basics
 #Subsetting
 statesInfo <- read.csv("stateData.csv")
 stateSubset <- subset(statesInfo, state.region == 1)
@@ -34,7 +34,7 @@ qplot(reddit$age.range)
 qplot(data=reddit, x=income.range)
 #order varables
 
-#Explore one variable
+#Lesson 3: Explore one variable
 #Import fake facebook data
 pf <- read.csv('pseudo_facebook.tsv', sep = '\t')
 names(pf)
@@ -43,7 +43,7 @@ ggplot(data = pf, binwidth =25, aes(x = dob_day)) +
   scale_x_continuous(breaks = 1:31) + 
   facet_wrap(~dob_month)
 
-ggplot(data = pf, x = dob_day, bin=25) + 
+ggplot(data = pf, x = dob_day, binwidth=25) + 
   scale_x_continuous(breaks = 1:31) + 
   facet_wrap(~gender)
 
@@ -52,7 +52,7 @@ table(pf$gender)
 by(pf$friend_count, pf$gender, summary)
 
 friendCount <- pf$friend_count
-qplot(friendCount, bins=10)
+qplot(friendCount, binwidth=10)
 qplot(data = pf, x = friend_count)
 
 qplot(x= tenure, data=pf, 
@@ -66,7 +66,6 @@ qplot(x= tenure/365, data=pf, binwidth=1,
 ggplot(aes(x = tenure), data = pf) + 
   geom_histogram(binwidth = 30, color = 'black', fill = '#099DD9')
 
-Age <- ()
 qplot(data = pf, x=age, binwidth = 1, 
       ylab= "Number of users in sample",
       xlab= "Age") +
@@ -89,6 +88,104 @@ p2 <- p1 + scale_x_log10()
 p3 <- p1 + scale_x_sqrt()
 
 #Add a Scaling Layer
-logscale <- qplot(x= log10(friend_count), data = pf)
+logScale <- qplot(x= log10(friend_count), data = pf)
 countScale <- ggplot(aes(x= friend_count), data = pf) + geom_histogram() + scale_x_log10()
-grid.arrange(logscale, countScale, ncol = 2)
+grid.arrange(logScale, countScale, ncol = 2)
+
+qplot(x = friend_count, data = pf) + scale_x_log10()
+help("facet_wrap")
+
+#Frequency polygons
+qplot(x = friend_count, data = subset(pf, !is.na(gender)),
+      binwidth = 10 +
+        scale_x_continuous(lim = c(0, 1000), breaks = seq(0, 1000, 50)) + 
+        facet_wrap(~gender))
+      
+qplot(x = friend_count, y = ..count../sum(..count..), 
+      data = subset(pf, !is.na(gender)),
+      xlab = "Friend count",
+      ylab = "Proportion of users with that friend count",
+      binwidth = 10, geom = "freqpoly", color = gender) +
+      scale_x_continuous(lim = c(0, 1000), breaks = seq(0, 1000, 50))
+
+ggplot(aes(x = friend_count, y = ..count../sum(..count..)), data = subset(pf, !is.na(gender))) + 
+  geom_freqpoly(aes(color = gender), binwidth=10) + 
+  scale_x_continuous(limits = c(0, 1000), breaks = seq(0, 1000, 50)) + 
+  xlab('Friend Count') + 
+  ylab('Percentage of users with that friend count')
+
+#Likes by gender
+table(pf$www_likes, pf$gender)
+#summary
+by(pf$www_likes, pf$gender, summary)
+by(pf$www_likes, pf$gender, sum)
+
+#Box plots
+qplot(x=gender, y=friend_count, 
+      data = subset(pf, !is.na(gender)),
+      geom = 'boxplot')
+#with limits
+qplot(x=gender, y=friend_count, 
+      data = subset(pf, !is.na(gender)),
+      geom = 'boxplot', ylim = c(0,1000))
+
+qplot(x=gender, y=friend_count, 
+      data = subset(pf, !is.na(gender)),
+      geom = 'boxplot') +
+      scale_y_continuous(limits = c(0,1000))
+#better solution bc it doesn't remove outliers
+qplot(x=gender, y=friend_count, 
+      data = subset(pf, !is.na(gender)),
+      geom = 'boxplot') +
+  coord_cartesian(ylim = c(0,1000))
+
+qplot(x=gender, y=friend_count, 
+      data = subset(pf, !is.na(gender)),
+      geom = 'boxplot') +
+  coord_cartesian(ylim = c(0,250))
+
+by(pf$friend_count, pf$gender, summary)
+
+#gender and friendships initiated
+qplot(x=gender, y=friendships_initiated, 
+      data = subset(pf, !is.na(gender)),
+      geom = 'boxplot') +
+  coord_cartesian(ylim = c(0,150))
+
+#Logic - How many users checked in on mobile?
+summary(pf$mobile_likes)
+summary(pf$mobile_likes > 0)
+
+mobile_check_in <- NA
+pf$mobile_check_in <- ifelse(pf$mobile_likes > 0, 1, 0)
+pf$mobile_check_in <- factor(pf$mobile_check_in)
+summary(pf$mobile_check_in)
+
+#% of users that used check-in feature
+63947/ (63947 + 35056)
+sum(pf$mobile_check_in == 1)/length(pf$mobile_check_in)
+
+#Lesson 4
+#Diamonds
+data(diamonds)
+str(diamonds)
+table(diamonds$color)
+
+#create histogram of the price of all the diamonds
+qplot(data= diamonds, x=price)
+summary(diamonds$price)
+
+#less than $500
+lessthan500 <- subset(diamonds, price < 500)
+str(lessthan500)
+
+#less than $250
+lessthan250 <- subset(diamonds, price < 250)
+lessthan250
+str(lessthan250)
+
+#equal or more than $15,000
+morethan15000 <- subset(diamonds, price >= 15000)
+morethan15000
+str(morethan15000)
+
