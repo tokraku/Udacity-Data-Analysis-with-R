@@ -1,5 +1,5 @@
 #Created 01.28.17 by Therese Kennelly Okraku
-#Last edited 01.28.17 by Therese Kennelly Okraku
+#Last edited 01.29.17 by Therese Kennelly Okraku
 
 #Udacity's Data Analysis with R course
 
